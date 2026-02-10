@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.a1.databinding.FragmentFirstBinding
 
 class FirstFragment : Fragment() {
@@ -22,12 +23,9 @@ class FirstFragment : Fragment() {
         binding.btnGoToSecond.setOnClickListener {
             val userInput = binding.edtInput.text.toString()
 
-            val secondFragment = SecondFragment.newInstance(userInput)
-
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, secondFragment)
-                .addToBackStack(null)
-                .commit()
+            // Using SafeArgs to pass data
+            val action = FirstFragmentDirections.actionFirstFragmentToSecondFragment(userInput)
+            findNavController().navigate(action)
         }
 
         return binding.root

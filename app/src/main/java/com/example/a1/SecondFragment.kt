@@ -5,12 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.a1.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {
 
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
+
+    // Using SafeArgs to receive data
+    private val args: SecondFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,15 +24,13 @@ class SecondFragment : Fragment() {
     ): View {
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
 
-        val receivedInput = arguments?.getString(ARG_INPUT) ?: "No data received"
-
+        // Get the received input using SafeArgs
+        val receivedInput = args.userInput.ifEmpty { "No data received" }
         binding.txtDisplay.text = receivedInput
 
         binding.btnGoToThird.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, ThirdFragment())
-                .addToBackStack(null)
-                .commit()
+            val action = SecondFragmentDirections.actionSecondFragmentToThirdFragment()
+            findNavController().navigate(action)
         }
 
         return binding.root
@@ -36,18 +39,5 @@ class SecondFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val ARG_INPUT = "user_input"
-
-        fun newInstance(userInput: String): SecondFragment {
-            val fragment = SecondFragment()
-            val args = Bundle().apply {
-                putString(ARG_INPUT, userInput)
-            }
-            fragment.arguments = args
-            return fragment
-        }
     }
 }

@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("androidx.navigation.safeargs.kotlin")
-
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.navigation.safeargs.kotlin)
 }
 
 android {
@@ -49,10 +49,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
-
-    // SafeArgs (for type-safe data passing)
-    implementation("androidx.navigation:navigation-safe-args-gradle-plugin:2.7.5")
 }
 

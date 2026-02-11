@@ -8,16 +8,14 @@
 
     <EditText
         android:id="@+id/edtInput"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginTop="112dp"
         android:hint="Enter your text here"
-        android:inputType="text"
-        android:autofillHints="name"
         android:padding="16dp"
         android:textSize="18sp"
-        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

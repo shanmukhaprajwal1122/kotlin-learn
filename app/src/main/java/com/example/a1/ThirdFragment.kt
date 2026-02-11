@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.a1.databinding.FragmentThirdBinding
 
@@ -13,6 +14,8 @@ class ThirdFragment : Fragment() {
     private var _binding: FragmentThirdBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: SharedViewModel by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -20,10 +23,15 @@ class ThirdFragment : Fragment() {
     ): View {
         _binding = FragmentThirdBinding.inflate(inflater, container, false)
 
+        // This will now work! ✅
+        viewModel.userInput.observe(viewLifecycleOwner) { userInput ->
+            binding.tvThirdDisplay.text = "From FirstFragment: $userInput"
+        }
+
         binding.btnGoToFirst.setOnClickListener {
-            // Navigate to FirstFragment and clear the back stack
-            val action = ThirdFragmentDirections.actionThirdFragmentToFirstFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(
+                R.id.action_thirdFragment_to_firstFragment
+            )
         }
 
         return binding.root

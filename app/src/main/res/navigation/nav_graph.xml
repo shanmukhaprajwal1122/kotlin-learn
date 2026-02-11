@@ -8,9 +8,8 @@
     <fragment
         android:id="@+id/firstFragment"
         android:name="com.example.a1.FirstFragment"
-        android:label="First Fragment"
+        android:label="First Screen"
         tools:layout="@layout/fragment_first">
-
         <action
             android:id="@+id/action_firstFragment_to_secondFragment"
             app:destination="@id/secondFragment" />
@@ -19,14 +18,8 @@
     <fragment
         android:id="@+id/secondFragment"
         android:name="com.example.a1.SecondFragment"
-        android:label="Second Fragment"
+        android:label="Second Screen"
         tools:layout="@layout/fragment_second">
-
-        <argument
-            android:name="userInput"
-            app:argType="string"
-            android:defaultValue="" />
-
         <action
             android:id="@+id/action_secondFragment_to_thirdFragment"
             app:destination="@id/thirdFragment" />
@@ -35,15 +28,13 @@
     <fragment
         android:id="@+id/thirdFragment"
         android:name="com.example.a1.ThirdFragment"
-        android:label="Third Fragment"
+        android:label="Third Screen"
         tools:layout="@layout/fragment_third">
-
         <action
             android:id="@+id/action_thirdFragment_to_firstFragment"
             app:destination="@id/firstFragment"
-            app:popUpTo="@id/nav_graph"
+            app:popUpTo="@id/firstFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
 </navigation>
-

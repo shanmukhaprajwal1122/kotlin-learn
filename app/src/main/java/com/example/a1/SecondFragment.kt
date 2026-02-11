@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.a1.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {
@@ -14,8 +14,8 @@ class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
 
-    // Using SafeArgs to receive data
-    private val args: SecondFragmentArgs by navArgs()
+    // Get SharedViewModel (same one from FirstFragment!)
+    private val viewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,13 +24,15 @@ class SecondFragment : Fragment() {
     ): View {
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
 
-        // Get the received input using SafeArgs
-        val receivedInput = args.userInput.ifEmpty { "No data received" }
-        binding.txtDisplay.text = receivedInput
+        // Observe the data from ViewModel
+        viewModel.userInput.observe(viewLifecycleOwner) { userInput ->
+            binding.txtDisplay.text = userInput
+        }
 
         binding.btnGoToThird.setOnClickListener {
-            val action = SecondFragmentDirections.actionSecondFragmentToThirdFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(
+                R.id.action_secondFragment_to_thirdFragment
+            )
         }
 
         return binding.root

@@ -13,6 +13,5 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // That's it! Navigation Graph handles everything!
     }
 }

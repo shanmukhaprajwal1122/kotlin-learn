@@ -23,9 +23,20 @@ class ThirdFragment : Fragment() {
     ): View {
         _binding = FragmentThirdBinding.inflate(inflater, container, false)
 
-        // This will now work! ✅
-        viewModel.userInput.observe(viewLifecycleOwner) { userInput ->
-            binding.tvThirdDisplay.text = "From FirstFragment: $userInput"
+        // Observe the history list
+        viewModel.userInputList.observe(viewLifecycleOwner) { historyList ->
+            if (historyList.isEmpty()) {
+                binding.tvThirdDisplay.text = "No history yet"
+            } else {
+                // Display the entire history
+                val historyText = buildString {
+                    append("History (${historyList.size} items):\n\n")
+                    historyList.forEachIndexed { index, item ->
+                        append("${index + 1}. $item\n")
+                    }
+                }
+                binding.tvThirdDisplay.text = historyText
+            }
         }
 
         binding.btnGoToFirst.setOnClickListener {

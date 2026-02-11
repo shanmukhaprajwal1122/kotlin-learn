@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a1.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {
@@ -14,8 +15,8 @@ class SecondFragment : Fragment() {
     private var _binding: FragmentSecondBinding? = null
     private val binding get() = _binding!!
 
-    // Get SharedViewModel (same one from FirstFragment!)
     private val viewModel: SharedViewModel by activityViewModels()
+    private val historyAdapter = HistoryAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,9 +25,24 @@ class SecondFragment : Fragment() {
     ): View {
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
 
-        // Observe the data from ViewModel
-        viewModel.userInput.observe(viewLifecycleOwner) { userInput ->
-            binding.txtDisplay.text = userInput
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = historyAdapter
+        }
+
+        viewModel.userInputList.observe(viewLifecycleOwner) { historyList ->
+            if (historyList.isEmpty()) {
+                binding.recyclerView.visibility = View.GONE
+                binding.txtEmpty.visibility = View.VISIBLE
+            } else {
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.txtEmpty.visibility = View.GONE
+                historyAdapter.updateList(historyList)
+            }
+        }
+
+        binding.btnClearHistory.setOnClickListener {
+            viewModel.clearHistory()
         }
 
         binding.btnGoToThird.setOnClickListener {

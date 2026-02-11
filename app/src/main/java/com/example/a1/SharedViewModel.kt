@@ -6,16 +6,24 @@ import androidx.lifecycle.ViewModel
 
 class SharedViewModel : ViewModel() {
 
-    // MutableLiveData (internal - we can modify it)
-    private val _userInput = MutableLiveData<String>()
+    private val _userInputList = MutableLiveData<List<String>>(emptyList())
+    val userInputList: LiveData<List<String>> = _userInputList
 
-    val userInput: LiveData<String> = _userInput
-
-    fun setUserInput(input: String) {
-        _userInput.value = input
+    fun addUserInput(input: String) {
+        val currentList = _userInputList.value ?: emptyList()
+        val newList = currentList + input
+        _userInputList.value = newList
     }
 
-    fun getUserInput(): String {
-        return _userInput.value ?: "No data"
+    fun clearHistory() {
+        _userInputList.value = emptyList()
+    }
+
+    fun getInputAt(index: Int): String? {
+        return _userInputList.value?.getOrNull(index)
+    }
+
+    fun getInputCount(): Int {
+        return _userInputList.value?.size ?: 0
     }
 }

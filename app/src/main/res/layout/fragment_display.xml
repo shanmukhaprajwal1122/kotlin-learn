@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SecondFragment">
+    tools:context=".DisplayFragment">
 
     <!-- Title -->
     <TextView
@@ -47,20 +47,24 @@
         app:layout_constraintTop_toTopOf="@+id/recyclerView" />
 
     <!-- Clear History Button -->
+
+    <!-- Navigate Button -->
     <Button
         android:id="@+id/btnClearHistory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
         android:text="Clear History"
         app:layout_constraintBottom_toTopOf="@+id/btnGoToThird"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Navigate Button -->
     <Button
         android:id="@+id/btnGoToThird"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
         android:text="Go to Third"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

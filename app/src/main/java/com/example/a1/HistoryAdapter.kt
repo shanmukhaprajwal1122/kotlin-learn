@@ -5,7 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a1.databinding.ItemHistoryBinding
 
-class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+class HistoryAdapter(
+    private val onEditClick: (position: Int, text: String) -> Unit,
+    private val onDeleteClick: (position: Int) -> Unit
+) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
 
     private var historyList: List<String> = emptyList()
 
@@ -15,6 +18,14 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
         fun bind(text: String, position: Int) {
             binding.txtNumber.text = "${position + 1}."
             binding.txtContent.text = text
+
+            binding.btnEdit.setOnClickListener {
+                onEditClick(position, text)
+            }
+
+            binding.btnDelete.setOnClickListener {
+                onDeleteClick(position)
+            }
         }
     }
 
@@ -36,8 +47,51 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() 
         return historyList.size
     }
 
+    // ✅ OPTIMIZED: Specific notify methods
+
+    // Called when entire list replaced
     fun updateList(newList: List<String>) {
         historyList = newList
-        notifyDataSetChanged()
+        notifyDataSetChanged()  // OK here - entire list changed
+    }
+
+    // Called when single item edited
+    fun updateItem(position: Int, newText: String) {
+        if (position in historyList.indices) {
+            val mutableList = historyList.toMutableList()
+            mutableList[position] = newText
+            historyList = mutableList
+            notifyItemChanged(position)  // ✅ Only this item!
+        }
+    }
+
+    // Called when single item added
+    fun addItem(text: String) {
+        val mutableList = historyList.toMutableList()
+        mutableList.add(text)
+        historyList = mutableList
+        notifyItemInserted(historyList.size - 1)  // ✅ Only new item!
+    }
+
+    // Called when single item deleted
+    fun removeItem(position: Int) {
+        if (position in historyList.indices) {
+            val mutableList = historyList.toMutableList()
+            mutableList.removeAt(position)
+            historyList = mutableList
+            notifyItemRemoved(position)  // ✅ Only removed item!
+
+            // Update numbers for items after removed one
+            if (position < historyList.size) {
+                notifyItemRangeChanged(position, historyList.size - position)
+            }
+        }
+    }
+
+    // Called when all items cleared
+    fun clearAll() {
+        val size = historyList.size
+        historyList = emptyList()
+        notifyItemRangeRemoved(0, size)  // ✅ All items at once!
     }
 }

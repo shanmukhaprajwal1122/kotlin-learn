@@ -8,11 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.a1.databinding.FragmentFirstBinding
+import com.example.a1.databinding.FragmentInputBinding
 
-class FirstFragment : Fragment() {
+class InputFragment : Fragment() {
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentInputBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: SharedViewModel by activityViewModels()
@@ -22,7 +22,7 @@ class FirstFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentInputBinding.inflate(inflater, container, false)
 
         binding.btnGoToSecond.setOnClickListener {
             val userInput = binding.edtInput.text.toString()
@@ -38,7 +38,7 @@ class FirstFragment : Fragment() {
             Toast.makeText(requireContext(), "Added: $userInput", Toast.LENGTH_SHORT).show()
 
             findNavController().navigate(
-                R.id.action_firstFragment_to_secondFragment
+                R.id.action_inputFragment_to_displayFragment
             )
         }
 

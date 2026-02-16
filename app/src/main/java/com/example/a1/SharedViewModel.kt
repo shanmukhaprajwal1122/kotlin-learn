@@ -6,48 +6,51 @@ import androidx.lifecycle.ViewModel
 
 class SharedViewModel : ViewModel() {
 
-    private val _userInputList = MutableLiveData<List<String>>(emptyList())
-    val userInputList: LiveData<List<String>> = _userInputList
+    private val _notesList = MutableLiveData<List<Note>>(emptyList())
+    val notesList: LiveData<List<Note>> = _notesList
 
-    // Add new input
-    fun addUserInput(input: String) {
-        val currentList = _userInputList.value ?: emptyList()
-        val newList = currentList + input
-        _userInputList.value = newList
+    // Add new note
+    fun addNote(title: String, content: String) {
+        val currentList = _notesList.value ?: emptyList()
+        val newNote = Note(
+            title = title.ifEmpty { "Untitled" },
+            content = content
+        )
+        val newList = listOf(newNote) + currentList  // New note at top
+        _notesList.value = newList
     }
 
-    // Edit existing input at position
-    fun editUserInput(position: Int, newText: String) {
-        val currentList = _userInputList.value ?: emptyList()
-        if (position in currentList.indices) {
-            val newList = currentList.toMutableList()
-            newList[position] = newText
-            _userInputList.value = newList
+    // Update existing note
+    fun updateNote(noteId: String, title: String, content: String) {
+        val currentList = _notesList.value ?: emptyList()
+        val newList = currentList.map { note ->
+            if (note.id == noteId) {
+                note.copy(
+                    title = title.ifEmpty { "Untitled" },
+                    content = content,
+                    timestamp = System.currentTimeMillis()
+                )
+            } else {
+                note
+            }
         }
+        _notesList.value = newList
     }
 
-    // Delete input at position
-    fun deleteUserInput(position: Int) {
-        val currentList = _userInputList.value ?: emptyList()
-        if (position in currentList.indices) {
-            val newList = currentList.toMutableList()
-            newList.removeAt(position)
-            _userInputList.value = newList
-        }
+    // Delete note
+    fun deleteNote(noteId: String) {
+        val currentList = _notesList.value ?: emptyList()
+        val newList = currentList.filter { it.id != noteId }
+        _notesList.value = newList
     }
 
-    // Clear all history
-    fun clearHistory() {
-        _userInputList.value = emptyList()
+    // Get note by ID
+    fun getNoteById(noteId: String): Note? {
+        return _notesList.value?.find { it.id == noteId }
     }
 
-    // Get input at position
-    fun getInputAt(index: Int): String? {
-        return _userInputList.value?.getOrNull(index)
-    }
-
-    // Get count
-    fun getInputCount(): Int {
-        return _userInputList.value?.size ?: 0
+    // Clear all notes
+    fun clearAllNotes() {
+        _notesList.value = emptyList()
     }
 }

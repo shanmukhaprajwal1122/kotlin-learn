@@ -16,23 +16,25 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.Material3.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:layout_anchor="@+id/appBarLayout"
+            app:layout_anchorGravity="bottom|center"
             app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
             app:title="New Note"
-            app:titleTextColor="?attr/colorOnSurface"
-            style="@style/Widget.Material3.Toolbar">
+            app:titleTextColor="?attr/colorOnSurface">
 
             <!-- Save Button in Toolbar -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
                 android:text="Save"
-                app:icon="@android:drawable/ic_menu_save"
-                style="@style/Widget.Material3.Button.TextButton" />
+                app:icon="@android:drawable/ic_menu_save" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 

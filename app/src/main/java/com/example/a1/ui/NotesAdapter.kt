@@ -1,8 +1,9 @@
-package com.example.a1
+package com.example.a1.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.a1.data.Note
 import com.example.a1.databinding.ItemNoteBinding
 
 class NotesAdapter(
@@ -58,3 +59,4 @@ class NotesAdapter(
         notifyDataSetChanged()
     }
 }
+

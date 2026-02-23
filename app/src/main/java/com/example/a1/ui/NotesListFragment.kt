@@ -1,4 +1,4 @@
-package com.example.a1
+package com.example.a1.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.a1.NotesListFragmentDirections
+import com.example.a1.R
+import com.example.a1.data.Note
 import com.example.a1.databinding.FragmentNotesListBinding
+import com.example.a1.viewmodel.SharedViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class NotesListFragment : Fragment() {
@@ -142,3 +145,4 @@ class NotesListFragment : Fragment() {
         _binding = null
     }
 }
+

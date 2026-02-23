@@ -1,4 +1,4 @@
-package com.example.a1
+package com.example.a1.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.a1.NoteEditorFragmentArgs
+import com.example.a1.R
+import com.example.a1.data.Note
 import com.example.a1.databinding.FragmentNoteEditorBinding
+import com.example.a1.viewmodel.SharedViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class NoteEditorFragment : Fragment() {
@@ -49,11 +53,15 @@ class NoteEditorFragment : Fragment() {
         args.noteId?.let { noteId ->
             // Edit mode
             isEditMode = true
-            currentNote = viewModel.getNoteById(noteId)
-            currentNote?.let { note ->
-                binding.toolbar.title = "Edit Note"
-                binding.edtTitle.setText(note.title)
-                binding.edtContent.setText(note.content)
+            binding.toolbar.title = "Edit Note"
+
+            // Load note asynchronously from database
+            viewModel.getNoteById(noteId) { note ->
+                currentNote = note
+                note?.let {
+                    binding.edtTitle.setText(it.title)
+                    binding.edtContent.setText(it.content)
+                }
             }
         } ?: run {
             // New note mode
@@ -155,3 +163,4 @@ class NoteEditorFragment : Fragment() {
         _binding = null
     }
 }
+

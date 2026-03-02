@@ -45,10 +45,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-
-    // For advanced: MPAndroidChart
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
-    // Gson for JSON serialization
-    implementation("com.google.code.gson:gson:2.10.1")
 }

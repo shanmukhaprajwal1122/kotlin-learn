@@ -3,7 +3,6 @@ package com.example.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.BatteryManager
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,33 +18,44 @@ class ChargerReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "Received broadcast: ${intent.action}")
 
-        when (intent.action) {
-            Intent.ACTION_POWER_CONNECTED -> {
-                Log.d(TAG, "Charger connected")
-                // Optional: Stop alarm if it's ringing
-                AlarmPlayer.stopAlarm(context)
-            }
+        // Use goAsync() so the coroutine can safely finish before Android kills the process
+        val pendingResult = goAsync()
 
-            Intent.ACTION_POWER_DISCONNECTED -> {
-                Log.d(TAG, "Charger disconnected")
-                handleChargerDisconnected(context)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+
+                when (intent.action) {
+                    Intent.ACTION_POWER_CONNECTED -> {
+                        Log.d(TAG, "Charger connected")
+                        // Stop alarm service if it's ringing
+                        val stopIntent = Intent(context, AlarmService::class.java)
+                        context.stopService(stopIntent)
+                    }
+
+                    Intent.ACTION_POWER_DISCONNECTED -> {
+                        Log.d(TAG, "Charger disconnected")
+                        handleChargerDisconnected(context)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error in onReceive: ${e.message}", e)
+            } finally {
+                // Signal that async work is done
+                pendingResult.finish()
             }
         }
     }
 
-    private fun handleChargerDisconnected(context: Context) {
-        // Check if alarm is enabled
+    private suspend fun handleChargerDisconnected(context: Context) {
         val prefsManager = PreferencesManager(context)
+        val isEnabled = prefsManager.isAlarmEnabled.first()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val isEnabled = prefsManager.isAlarmEnabled.first()
-
-            if (isEnabled) {
-                Log.d(TAG, "Alarm is enabled, starting alarm")
-                AlarmPlayer.playAlarm(context)
-            } else {
-                Log.d(TAG, "Alarm is disabled, ignoring event")
-            }
+        if (isEnabled) {
+            Log.d(TAG, "Alarm is enabled, starting AlarmService")
+            val serviceIntent = Intent(context, AlarmService::class.java)
+            context.startForegroundService(serviceIntent)
+        } else {
+            Log.d(TAG, "Alarm is disabled, ignoring event")
         }
     }
 }

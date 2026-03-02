@@ -1,7 +1,6 @@
 package com.example.broadcast
 
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -12,7 +11,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var prefsManager: PreferencesManager
-    private lateinit var chargerReceiver: ChargerReceiver
 
     private lateinit var tvStatus: TextView
     private lateinit var tvAlarmName: TextView
@@ -26,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         prefsManager = PreferencesManager(this)
-        chargerReceiver = ChargerReceiver()
 
         // Initialize views
         tvStatus = findViewById(R.id.tvStatus)
@@ -62,9 +59,9 @@ class MainActivity : AppCompatActivity() {
         btnEnable.setOnClickListener {
             lifecycleScope.launch {
                 if (isAlarmEnabled) {
-                    // Disable alarm and stop if ringing
+                    // Disable alarm and stop service if ringing
                     prefsManager.setAlarmEnabled(false)
-                    AlarmPlayer.stopAlarm(this@MainActivity)
+                    stopService(Intent(this@MainActivity, AlarmService::class.java))
                 } else {
                     // Enable alarm
                     prefsManager.setAlarmEnabled(true)
@@ -84,26 +81,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             tvStatus.text = "Alarm Status: Disabled"
             btnEnable.text = "Enable Alarm"
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Register receiver dynamically
-        val filter = IntentFilter().apply {
-            addAction(Intent.ACTION_POWER_CONNECTED)
-            addAction(Intent.ACTION_POWER_DISCONNECTED)
-        }
-        registerReceiver(chargerReceiver, filter)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Unregister receiver
-        try {
-            unregisterReceiver(chargerReceiver)
-        } catch (e: Exception) {
-            // Already unregistered
         }
     }
 }

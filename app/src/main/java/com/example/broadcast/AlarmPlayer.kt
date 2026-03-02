@@ -1,9 +1,10 @@
 package com.example.broadcast
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.media.RingtoneManager
+import android.net.Uri
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -17,7 +18,7 @@ object AlarmPlayer {
     suspend fun playAlarm(context: Context) {
         withContext(Dispatchers.Main) {
             try {
-                stopAlarm(context)
+                stopAlarm()
 
                 val prefsManager = PreferencesManager(context)
                 val uriString = prefsManager.alarmAudioUri.first()
@@ -31,20 +32,31 @@ object AlarmPlayer {
                 }
 
                 mediaPlayer = MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_ALARM)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build()
+                    )
                     setDataSource(context, uri!!)
                     isLooping = true
-                    prepare()
-                    start()
+                    setOnPreparedListener { mp ->
+                        mp.start()
+                        Log.d(TAG, "Alarm started playing")
+                    }
+                    setOnErrorListener { _, what, extra ->
+                        Log.e(TAG, "MediaPlayer error: what=$what extra=$extra")
+                        true
+                    }
+                    prepareAsync()
                 }
-
-                Log.d(TAG, "Alarm started playing")
             } catch (e: Exception) {
                 Log.e(TAG, "Error playing alarm: ${e.message}", e)
             }
         }
     }
 
-    fun stopAlarm(context: Context) {
+    fun stopAlarm() {
         try {
             mediaPlayer?.let {
                 if (it.isPlaying) {
